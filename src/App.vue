@@ -14,7 +14,7 @@ import Footer from './components/Footer.vue'
 </script>
 
 <style lang="scss">
-@use './styles/variables.scss';
+@use './styles/variables.scss';   
 
 .app {
   width: 100%;
