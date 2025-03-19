@@ -1,5 +1,38 @@
-# Vue 3 + Vite
+# 在线工具集合
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+一用 Vue 3 开发的在线工具集合网站，提供各种常用的开发工具和实用工具。
+## 功能特点
+- 🛠 丰富的工具集合
+ - JSON 格式化
+ - Base64 编解码
+ - 时间戳转换
+ - 图片编辑
+ - HTML 转义
+ - Markdown 编辑器
+ - 更多工具持续添加中...
+- 💡 便捷的使用体验
+ - 简洁直观的界面
+ - 本地运行，保护隐私
+ - 支持收藏常用工具
+ - 深色/浅色主题切换
+- 🚀 技术特性
+ - 使用 Vue 3 + Vite 构建
+ - 基于 Composition API
+ - 响应式设计，支持移动端
+ - 使用 Pinia 状态管理
+## 开发说明
+### 环境要求
+- Node.js >= 16
+ npm >= 8
+### 安装依赖
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## 贡献指南
+
+1. Fork 本仓库
+2. 创建新的功能分支
+3. 提交你的修改
+4. 创建 Pull Request
+
+## 开源协议
+
+[MIT License](LICENSE)
