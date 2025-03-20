@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
+import { useUserStore } from '@/stores/user'
 
 /**
  * @type {import('vue-router').RouteRecordRaw[]}
@@ -114,7 +115,8 @@ const routes = [
     name: 'Favorites',
     component: () => import('../views/Favorites.vue'),
     meta: {
-      title: '我的收藏'
+      title: '我的收藏',
+      requiresAuth: true
     }
   },
   {
@@ -146,7 +148,8 @@ const routes = [
     name: 'Feedback',
     component: () => import('../views/Feedback.vue'),
     meta: {
-      title: '意见反馈'
+      title: '意见反馈',
+      requiresAuth: true
     }
   },
   {
@@ -154,7 +157,8 @@ const routes = [
     name: 'Report',
     component: () => import('../views/Report.vue'),
     meta: {
-      title: '问题报告'
+      title: '问题报告',
+      requiresAuth: true
     }
   },
   {
@@ -174,6 +178,14 @@ const routes = [
     }
   },
   {
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/Login.vue'),
+    meta: {
+      title: '登录'
+    }
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: () => import('../views/NotFound.vue'),
@@ -188,12 +200,30 @@ const router = createRouter({
   routes
 })
 
-// 添加全局路由守卫来设置页面标题
+// 修改路由守卫
 router.beforeEach((to, from, next) => {
+  const userStore = useUserStore()
+  
   // 设置页面标题
   document.title = to.meta.title ? 
     `${to.meta.title} - 工具集合` : 
     '工具集合 - 便捷高效的在线工具箱'
+  
+  // 需要登录的路由
+  if (to.meta.requiresAuth && !userStore.isLoggedIn) {
+    next({
+      path: '/login',
+      query: { redirect: to.fullPath }
+    })
+    return
+  }
+  
+  // 已登录用户访问登录页面，重定向到首页
+  if (to.path === '/login' && userStore.isLoggedIn) {
+    next('/')
+    return
+  }
+  
   next()
 })
 

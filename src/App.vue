@@ -9,8 +9,16 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue'
+import { useUserStore } from '@/stores/user'
 import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
+
+const userStore = useUserStore()
+
+onMounted(() => {
+  userStore.loadFromStorage()
+})
 </script>
 
 <style lang="scss">

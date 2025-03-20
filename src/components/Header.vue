@@ -44,8 +44,8 @@
         </div>
         <router-link to="/favorites">我的收藏</router-link>
         <router-link to="/updates">更新日志</router-link>
-        <router-link to="/about">关于</router-link>
-        <router-link to="/business">商务合作</router-link>
+        <!-- <router-link to="/about">关于</router-link> -->
+        <!-- <router-link to="/business">商务合作</router-link> -->
       </nav>
 
       <div class="header-actions">
@@ -110,7 +110,71 @@
           <span v-else class="theme-icon">🌙</span>
         </button>
       </div>
+
+      <div class="header-right">
+        <!-- 未登录状态 -->
+        <button 
+          v-if="!isLoggedIn" 
+          class="login-btn"
+          @click="showLoginDialog = true"
+        >
+          登录
+        </button>
+        
+        <!-- 已登录状态 -->
+        <div class="user-menu" v-else>
+          <button 
+            class="user-btn" 
+            @mouseenter="showUserDropdown = true"
+          >
+            <img 
+              v-if="userAvatar" 
+              :src="userAvatar" 
+              class="user-avatar"
+              alt="用户头像"
+            >
+            <span v-else class="user-initial">
+              {{ userName?.[0]?.toUpperCase() || '👤' }}
+            </span>
+            <span class="username">{{ userName }}</span>
+            <span class="dropdown-arrow">▾</span>
+          </button>
+          
+          <div 
+            class="dropdown-menu"
+            :class="{ 'show': showUserDropdown }" 
+            @mouseleave="showUserDropdown = false"
+          >
+            <div class="user-info">
+              <span class="user-name">{{ userName }}</span>
+              <span class="user-email">{{ userStore.userEmail }}</span>
+            </div>
+            <div class="menu-divider"></div>
+            <router-link to="/favorites" class="menu-item">
+              <span class="item-icon">⭐️</span>
+              我的收藏
+            </router-link>
+            <button class="menu-item" @click="handleLogout">
+              <span class="item-icon">🚪</span>
+              退出登录
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- 登录弹框 -->
+    <LoginDialog 
+      v-model="showLoginDialog"
+    />
+
+    <!-- 确认退出弹框 -->
+    <ConfirmDialog
+      v-model="showLogoutConfirm"
+      title="退出登录"
+      message="确定要退出登录吗？"
+      @confirm="confirmLogout"
+    />
   </header>
 </template>
 
@@ -120,13 +184,24 @@ import { useRouter } from 'vue-router'
 import { useThemeStore } from '../stores/theme'
 import { tools, getHotTools, searchTools } from '../config/tools'
 import { onMounted } from 'vue'
+import { useUserStore } from '@/stores/user'
+import LoginDialog from './LoginDialog.vue'
+import ConfirmDialog from './ConfirmDialog.vue'
 
 const router = useRouter()
 const themeStore = useThemeStore()
+const userStore = useUserStore()
 const searchQuery = ref('')
 const showDropdown = ref(false)
 const showSearchResults = ref(false)
 let dropdownTimer = null
+const showLoginDialog = ref(false)
+const showUserDropdown = ref(false)
+const showLogoutConfirm = ref(false)
+
+const isLoggedIn = computed(() => userStore.isLoggedIn)
+const userName = computed(() => userStore.userName)
+const userAvatar = computed(() => userStore.userAvatar)
 
 // 常用工具列表 - 使用配置中的热门工具
 const commonTools = computed(() => {
@@ -193,6 +268,16 @@ const handleMouseLeave = () => {
   dropdownTimer = setTimeout(() => {
     showDropdown.value = false
   }, 200) // 200ms 延迟
+}
+
+const handleLogout = () => {
+  showUserDropdown.value = false
+  showLogoutConfirm.value = true
+}
+
+const confirmLogout = async () => {
+  await userStore.logout()
+  router.push('/')
 }
 
 onMounted(() => {
@@ -587,6 +672,156 @@ onMounted(() => {
     left: 1rem;
     right: 1rem;
     margin-top: 0;
+  }
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.login-btn {
+  padding: 0.5rem 1.25rem;
+  border: 1px solid var(--primary);
+  border-radius: 6px;
+  background: none;
+  color: var(--primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: var(--primary);
+    color: white;
+  }
+}
+
+.user-menu {
+  position: relative;
+  
+  .user-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s;
+    
+    &:hover {
+      border-color: var(--primary);
+      background: var(--bg-hover);
+    }
+    
+    .user-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    
+    .user-initial {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary-50);
+      color: var(--primary);
+      border-radius: 50%;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    
+    .username {
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 0.875rem;
+    }
+    
+    .dropdown-arrow {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      transition: transform 0.2s;
+    }
+    
+    &:hover .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    min-width: 200px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    
+    .user-info {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      
+      .user-name {
+        display: block;
+        font-weight: 500;
+        color: var(--text-primary);
+      }
+      
+      .user-email {
+        display: block;
+        font-size: 0.875rem;
+        color: var(--text-tertiary);
+        margin-top: 0.25rem;
+      }
+    }
+    
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: none;
+      background: none;
+      color: var(--text-primary);
+      text-decoration: none;
+      cursor: pointer;
+      font-size: 0.875rem;
+      
+      &:hover {
+        background: var(--bg-hover);
+        color: var(--primary);
+      }
+      
+      .item-icon {
+        font-size: 1.125rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .user-menu {
+    .user-btn {
+      padding: 0.5rem;
+      
+      .username {
+        display: none;
+      }
+      
+      .dropdown-arrow {
+        display: none;
+      }
+    }
   }
 }
 </style> 

@@ -95,6 +95,7 @@
                     </div>
                     <div class="tools-sort">
                         <select v-model="sortBy" class="sort-select">
+                            <option value="default">默认</option>
                             <option value="popular">按热度排序</option>
                             <option value="newest">最新添加</option>
                             <option value="name">按名称排序</option>
@@ -109,7 +110,7 @@
                         :to="tool.path"
                         class="tool-card"
                         :class="{ 'new': tool.isNew, 'popular': tool.isPopular }"
-                    >
+                    >   
                         <div class="tool-card-header">
                             <span class="tool-icon">{{ tool.icon }}</span>
                             
@@ -126,16 +127,13 @@
                             <h3>{{ tool.name }}</h3>
                             <p>{{ tool.description }}</p>
                         </div>
+
                         <div class="tool-card-footer">
                             <div class="tool-stats">
                                 <span class="stat-item">
                                     <span class="stat-icon">👁️</span>
                                     {{ tool.views }}
                                 </span>
-                                <!-- <span class="stat-item">
-                                    <span class="stat-icon">⭐️</span>
-                                    {{ tool.rating }}
-                                </span> -->
                                 <FavoriteButton :tool-id="tool.id" />
                             </div>
                             <span class="use-btn">使用工具</span>
@@ -471,25 +469,44 @@ watch([selectedCategories, frequency, sortBy], () => {
 .tools-count {
     color: var(--text-secondary);
     font-size: 0.875rem;
+    
+    span {
+        color: var(--text-primary);
+        font-weight: 500;
+    }
 }
 
-.tools-count span {
-    color: var(--text-primary);
-    font-weight: 600;
-}
-
-.sort-select {
-    padding: 0.5rem 2rem 0.5rem 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    font-size: 0.875rem;
-    background-color: var(--bg-card);
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    background-size: 16px;
+.tools-sort {
+    .sort-select {
+        padding: 0.5rem 2rem 0.5rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        font-size: 0.875rem;
+        color: var(--text-primary);
+        background-color: var(--bg-card);
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M2.5 4.5L6 8L9.5 4.5' stroke='%23666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        transition: all 0.2s;
+        
+        &:hover {
+            border-color: var(--primary);
+        }
+        
+        &:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
+        }
+        
+        option {
+            background-color: var(--bg-card);
+            color: var(--text-primary);
+            padding: 0.5rem;
+        }
+    }
 }
 
 /* 工具卡片优化 */
@@ -567,6 +584,7 @@ watch([selectedCategories, frequency, sortBy], () => {
     justify-content: space-between;
     align-items: center;
 }
+
 
 .tool-stats {
     display: flex;
@@ -693,12 +711,19 @@ watch([selectedCategories, frequency, sortBy], () => {
 
     .tools-header {
         flex-direction: column;
-        align-items: flex-start;
         gap: 1rem;
+        align-items: flex-start;
     }
 
-    .sort-select {
+    .tools-sort {
         width: 100%;
+        
+        .sort-select {
+            width: 100%;
+            padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+            font-size: 0.8125rem;
+            background-position: right 0.5rem center;
+        }
     }
 
     .filter-section {
@@ -1021,6 +1046,7 @@ watch([selectedCategories, frequency, sortBy], () => {
             display: flex;
             align-items: center;
             gap: 1rem;
+            border-top: none;
         }
     }
 }

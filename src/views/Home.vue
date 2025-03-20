@@ -3,20 +3,48 @@
       <div class="hero-content">
         <h1>便捷高效的在线工具集合</h1>
         <p class="subtitle">为提高工作效率而生</p>
-        <div class="search-large">
-          <input
-            type="text"
-            placeholder="搜索你需要的工具..."
-            v-model="searchQuery"
-          />
-          <button type="button" @click="handleSearch">搜索</button>
+        <div class="search-container">
+          <div class="search-input">
+            <input
+              type="text"
+              placeholder="搜索你需要的工具..."
+              v-model="searchQuery"
+              @focus="showSearchResults = true"
+              @keyup.enter="handleSearch"
+            />
+            <button class="search-btn" @click="handleSearch">
+              <span class="search-icon">🔍</span>
+            </button>
+          </div>
+          
+          <div 
+            class="search-results" 
+            v-if="showSearchResults && searchResults.length > 0"
+          >
+            <router-link
+              v-for="result in searchResults"
+              :key="result.id"
+              :to="result.path"
+              class="result-item"
+              @click="selectResult(result)"
+            >
+              <span class="result-icon">{{ result.icon }}</span>
+              <div class="result-info">
+                <span class="result-name">{{ result.name }}</span>
+                <span class="result-desc">{{ result.description }}</span>
+              </div>
+            </router-link>
+          </div>
         </div>
         <div class="hot-tags">
           <span>热门搜索：</span>
-          <router-link to="/tools/json-formatter">JSON格式化</router-link>
-          <router-link to="/tools/image-compress">图片压缩</router-link>
-          <router-link to="/tools/pdf-convert">PDF转换</router-link>
-          <router-link to="/tools/timestamp">时间戳</router-link>
+          <router-link
+            v-for="tag in hotTags"
+            :key="tag.id"
+            :to="tag.path"
+          >
+            {{ tag.name }}
+          </router-link>
         </div>
       </div>
     </section>
@@ -27,29 +55,14 @@
         <router-link to="/tools" class="view-all">查看全部工具 →</router-link>
       </div>
       <div class="quick-grid">
-        <router-link to="/tools/json-formatter" class="quick-card">
-          <span class="quick-icon">📝</span>
-          <span class="quick-text">JSON格式化</span>
-        </router-link>
-        <router-link to="/tools/image-compress" class="quick-card">
-          <span class="quick-icon">🖼️</span>
-          <span class="quick-text">图片压缩</span>
-        </router-link>
-        <router-link to="/tools/pdf-convert" class="quick-card">
-          <span class="quick-icon">📄</span>
-          <span class="quick-text">PDF转换</span>
-        </router-link>
-        <router-link to="/tools/timestamp" class="quick-card">
-          <span class="quick-icon">⏰</span>
-          <span class="quick-text">时间戳转换</span>
-        </router-link>
-        <router-link to="/tools/encrypt" class="quick-card">
-          <span class="quick-icon">🔒</span>
-          <span class="quick-text">加密解密</span>
-        </router-link>
-        <router-link to="/tools/qrcode" class="quick-card">
-          <span class="quick-icon">📊</span>
-          <span class="quick-text">二维码生成</span>
+        <router-link
+          v-for="tool in quickTools"
+          :key="tool.id"
+          :to="tool.path"
+          class="quick-card"
+        >
+          <span class="quick-icon">{{ tool.icon }}</span>
+          <span class="quick-text">{{ tool.name }}</span>
         </router-link>
       </div>
     </section>
@@ -59,51 +72,18 @@
         <h2>工具分类</h2>
       </div>
       <div class="category-grid">
-        <router-link to="/tools?category=dev" class="category-card">
-          <div class="category-icon">💻</div>
+        <router-link
+          v-for="category in toolCategories"
+          :key="category.id"
+          :to="`/tools?category=${category.id}`"
+          class="category-card"
+        >
+          <div class="category-icon">{{ category.icon }}</div>
           <div class="category-content">
-            <h3>开发工具</h3>
-            <p>12个工具</p>
+            <h3>{{ category.name }}</h3>
+            <p>{{ category.count }}个工具</p>
             <div class="category-tags">
-              <span>JSON</span>
-              <span>Base64</span>
-              <span>时间戳</span>
-            </div>
-          </div>
-        </router-link>
-        <router-link to="/tools?category=image" class="category-card">
-          <div class="category-icon">🎨</div>
-          <div class="category-content">
-            <h3>图片工具</h3>
-            <p>8个工具</p>
-            <div class="category-tags">
-              <span>压缩</span>
-              <span>转换</span>
-              <span>裁剪</span>
-            </div>
-          </div>
-        </router-link>
-        <router-link to="/tools?category=doc" class="category-card">
-          <div class="category-icon">📄</div>
-          <div class="category-content">
-            <h3>文档工具</h3>
-            <p>10个工具</p>
-            <div class="category-tags">
-              <span>PDF转换</span>
-              <span>Word</span>
-              <span>Excel</span>
-            </div>
-          </div>
-        </router-link>
-        <router-link to="/tools?category=encrypt" class="category-card">
-          <div class="category-icon">🔒</div>
-          <div class="category-content">
-            <h3>加密工具</h3>
-            <p>6个工具</p>
-            <div class="category-tags">
-              <span>MD5</span>
-              <span>Base64</span>
-              <span>AES</span>
+              <span v-for="tag in category.tags" :key="tag">{{ tag }}</span>
             </div>
           </div>
         </router-link>
@@ -115,25 +95,14 @@
         <h2>为什么选择我们</h2>
       </div>
       <div class="features-grid">
-        <div class="feature-card">
-          <span class="feature-icon">🚀</span>
-          <h3>快速高效</h3>
-          <p>所有工具都经过优化，确保处理速度</p>
-        </div>
-        <div class="feature-card">
-          <span class="feature-icon">🔒</span>
-          <h3>安全可靠</h3>
-          <p>本地运算，数据无需上传服务器</p>
-        </div>
-        <div class="feature-card">
-          <span class="feature-icon">💻</span>
-          <h3>便捷使用</h3>
-          <p>无需下载安装，随时随地使用</p>
-        </div>
-        <div class="feature-card">
-          <span class="feature-icon">🆓</span>
-          <h3>完全免费</h3>
-          <p>所有工具免费使用，无需付费</p>
+        <div 
+          v-for="feature in features"
+          :key="feature.id"
+          class="feature-card"
+        >
+          <span class="feature-icon">{{ feature.icon }}</span>
+          <h3>{{ feature.title }}</h3>
+          <p>{{ feature.description }}</p>
         </div>
       </div>
     </section>
@@ -144,32 +113,76 @@
         <router-link to="/updates" class="view-all">查看更多 →</router-link>
       </div>
       <div class="latest-grid">
-        <div class="update-card">
-          <div class="update-badge">新功能</div>
-          <h3>JSON格式化工具更新</h3>
-          <p>新增代码高亮和语法检查功能</p>
-          <time>2024-03-20</time>
+        <div 
+          v-for="update in latestUpdates"
+          :key="update.id"
+          class="update-card"
+        >
+          <div class="update-badge">{{ update.type }}</div>
+          <h3>{{ update.title }}</h3>
+          <p>{{ update.description }}</p>
+          <time>{{ update.date }}</time>
         </div>
       </div>
     </section>
 </template>
   
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import { categories, tools, getHotTools, getNewTools } from '../config/tools'
+import { useToolStore } from '@/stores/tool'
 
 const router = useRouter();
+const toolStore = useToolStore();
 const searchQuery = ref("");
+const showSearchResults = ref(false);
 
+// 搜索结果
+const searchResults = computed(() => {
+  if (!searchQuery.value) return [];
+  
+  const query = searchQuery.value.toLowerCase();
+  return toolStore.tools.filter(tool => {
+    return tool.name.toLowerCase().includes(query) ||
+           tool.description.toLowerCase().includes(query) ||
+           tool.tags.some(tag => tag.toLowerCase().includes(query));
+  }).slice(0, 5); // 限制显示前5个结果
+});
+
+// 处理搜索
 const handleSearch = () => {
-  if (searchQuery.value) {
-    router.push({
-      path: "/tools",
-      query: { search: searchQuery.value },
-    });
+  if (!searchQuery.value) return;
+  
+  router.push({
+    path: '/tools',
+    query: { search: searchQuery.value }
+  });
+};
+
+// 选择搜索结果
+const selectResult = (tool) => {
+  router.push(tool.path);
+  searchQuery.value = '';
+  showSearchResults.value = false;
+};
+
+// 处理点击外部关闭搜索结果
+const handleClickOutside = (event) => {
+  const searchContainer = document.querySelector('.search-container');
+  if (searchContainer && !searchContainer.contains(event.target)) {
+    showSearchResults.value = false;
   }
 };
+
+// 监听点击事件
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
 
 // 分类统计
 const categoryStats = computed(() => {
@@ -189,6 +202,96 @@ const hotTools = computed(() => getHotTools())
 
 // 最新工具
 const newTools = computed(() => getNewTools())
+
+// 热门标签数据
+const hotTags = [
+  { id: 'json', name: 'JSON格式化', path: '/tools/json-formatter' },
+  { id: 'image', name: '图片压缩', path: '/tools/image-compress' },
+  { id: 'pdf', name: 'PDF转换', path: '/tools/pdf-convert' },
+  { id: 'time', name: '时间戳', path: '/tools/timestamp' }
+]
+
+// 快速访问工具数据
+const quickTools = [
+  { id: 'json', name: 'JSON格式化', icon: '📝', path: '/tools/json-formatter' },
+  { id: 'image', name: '图片压缩', icon: '🖼️', path: '/tools/image-compress' },
+  { id: 'pdf', name: 'PDF转换', icon: '📄', path: '/tools/pdf-convert' },
+  { id: 'time', name: '时间戳转换', icon: '⏰', path: '/tools/timestamp' },
+  { id: 'encrypt', name: '加密解密', icon: '🔒', path: '/tools/encrypt' },
+  { id: 'qrcode', name: '二维码生成', icon: '📱', path: '/tools/qrcode' }
+]
+
+// 最新更新数据
+const latestUpdates = [
+  {
+    id: 1,
+    type: '新功能',
+    title: 'JSON格式化工具更新',
+    description: '新增代码高亮和语法检查功能',
+    date: '2024-03-20'
+  }
+  // ... 可以添加更多更新记录
+]
+
+// 工具分类数据
+const toolCategories = [
+  {
+    id: 'dev',
+    name: '开发工具',
+    icon: '💻',
+    count: 12,
+    tags: ['JSON', 'Base64', '时间戳']
+  },
+  {
+    id: 'image',
+    name: '图片工具',
+    icon: '🎨',
+    count: 8,
+    tags: ['压缩', '转换', '裁剪']
+  },
+  {
+    id: 'doc',
+    name: '文档工具',
+    icon: '📄',
+    count: 10,
+    tags: ['PDF转换', 'Word', 'Excel']
+  },
+  {
+    id: 'encrypt',
+    name: '加密工具',
+    icon: '🔒',
+    count: 6,
+    tags: ['MD5', 'Base64', 'AES']
+  }
+]
+
+// 特性数据
+const features = [
+  {
+    id: 'speed',
+    icon: '🚀',
+    title: '快速高效',
+    description: '所有工具都经过优化，确保处理速度'
+  },
+  {
+    id: 'security',
+    icon: '🔒',
+    title: '安全可靠',
+    description: '本地运算，数据无需上传服务器'
+  },
+  {
+    id: 'easy',
+    icon: '💻',
+    title: '便捷使用',
+    description: '无需下载安装，随时随地使用'
+  },
+  {
+    id: 'free',
+    icon: '🆓',
+    title: '完全免费',
+    description: '所有工具免费使用，无需付费'
+  }
+]
 </script>
   
 <style lang="scss" scoped>
@@ -227,51 +330,113 @@ main {
 }
 
 /* 搜索框 */
-.search-large {
-  display: flex;
-  gap: 0.75rem;
-  margin: 2rem auto;
+.search-container {
+  position: relative;
+  width: 100%;
   max-width: 600px;
-  padding: 0 1rem;
+  margin: 2rem auto 0;
 }
 
-.search-large input {
-  flex: 1;
-  min-width: 0;
-  padding: 1rem 1.5rem;
+.search-input {
+  display: flex;
+  align-items: center;
+  background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  font-size: 1rem;
-  background: var(--bg-card);
-  color: var(--text-primary);
+  padding: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.2s;
+  
+  &:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 2px 12px rgba(var(--primary-rgb), 0.2);
+  }
+  
+  input {
+    flex: 1;
+    border: none;
+    padding: 0.75rem;
+    font-size: 1rem;
+    outline: none;
+    background: transparent;
+    color: var(--text-primary);
+    
+    &::placeholder {
+      color: var(--text-secondary);
+    }
+  }
+  
+  .search-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.75rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    
+    &:hover {
+      background: var(--primary-dark);
+    }
+    
+    .search-icon {
+      font-size: 1.25rem;
+    }
+  }
 }
 
-.search-large input:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.search-large input::placeholder {
-  color: var(--text-tertiary);
-}
-
-.search-large button {
-  padding: 1rem 2rem;
-  background-color: var(--primary);
-  color: white;
-  border: none;
+/* 搜索结果下拉框 */
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 500;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.search-large button:hover {
-  background-color: var(--primary-dark);
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  z-index: 10;
+  
+  .result-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: background 0.2s;
+    
+    &:hover {
+      background: var(--bg-hover);
+    }
+    
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .result-icon {
+      font-size: 1.5rem;
+    }
+    
+    .result-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      
+      .result-name {
+        font-weight: 500;
+        color: var(--text-primary);
+      }
+      
+      .result-desc {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+      }
+    }
+  }
 }
 
 /* 热门标签 */
@@ -280,22 +445,22 @@ main {
   text-align: center;
   color: var(--text-secondary);
   font-size: 0.875rem;
-}
-
-.hot-tags span {
-  margin-right: 0.5rem;
-}
-
-.hot-tags a {
-  color: var(--primary);
-  text-decoration: none;
-  margin: 0 0.5rem;
-  transition: color 0.2s;
-}
-
-.hot-tags a:hover {
-  color: var(--primary-dark);
-  text-decoration: underline;
+  
+  span {
+    margin-right: 0.5rem;
+  }
+  
+  a {
+    color: var(--primary);
+    text-decoration: none;
+    margin: 0 0.5rem;
+    transition: color 0.2s;
+    
+    &:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
+  }
 }
 
 /* 快速访问区域 */
@@ -540,164 +705,6 @@ main {
   border-radius: 12px;
 }
 
-/* 搜索下拉菜单 */
-.search-dropdown {
-  position: absolute;
-  top: calc(100% + 0.5rem);
-  left: 0;
-  right: 0;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-  padding: 1rem;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-8px);
-  transition: all 0.2s;
-}
-
-.search-box:focus-within .search-dropdown {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.search-category h4 {
-  font-size: 0.875rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-  color: var(--text-primary);
-}
-
-.search-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.hot-tag {
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.375rem 0.75rem;
-  background: var(--bg-main);
-  border-radius: 16px;
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  text-decoration: none;
-  transition: all 0.2s;
-}
-
-.hot-tag:hover {
-  background: var(--bg-hover);
-  color: var(--primary);
-}
-
-.tag-icon {
-  color: #ef4444;
-}
-
-.search-results h4 {
-  font-size: 0.875rem;
-  font-weight: 600;
-  margin: 1rem 0 0.75rem;
-  color: var(--text-primary);
-}
-
-.result-group h5 {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.5rem;
-}
-
-.result-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  border-radius: 8px;
-  text-decoration: none;
-  transition: background-color 0.2s;
-}
-
-.result-item:hover {
-  background: var(--bg-hover);
-}
-
-.result-icon {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-main);
-  border-radius: 8px;
-  font-size: 1.25rem;
-}
-
-.result-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.result-title {
-  display: block;
-  font-weight: 500;
-  color: var(--text-primary);
-  margin-bottom: 0.25rem;
-}
-
-.result-desc {
-  display: block;
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.result-tag {
-  padding: 0.25rem 0.5rem;
-  background: #fee2e2;
-  color: #ef4444;
-  border-radius: 12px;
-  font-size: 0.75rem;
-}
-
-/* 工具过滤器 */
-.tool-filters {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.tool-filters button {
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--border-color);
-  background: var(--bg-card);
-  border-radius: 6px;
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.tool-filters button.active {
-  background-color: var(--primary);
-  color: white;
-  border-color: var(--primary);
-}
-
-.tool-filters button:hover:not(.active) {
-  border-color: var(--primary);
-  color: var(--primary);
-}
-
 /* 响应式适配 */
 @media (max-width: 768px) {
   .hero-section {
@@ -712,8 +719,49 @@ main {
     font-size: 1rem;
   }
 
-  .search-large {
-    margin: 1.5rem auto;
+  .search-container {
+    max-width: 100%;
+    padding: 0 1rem;
+  }
+
+  .search-input {
+    input {
+      font-size: 0.875rem;
+    }
+    
+    .search-btn {
+      padding: 0.625rem;
+      
+      .search-icon {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  .search-results {
+    position: fixed;
+    top: 72px;
+    left: 1rem;
+    right: 1rem;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: var(--bg-card);
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 3px;
+      
+      &:hover {
+        background: var(--text-secondary);
+      }
+    }
   }
 
   .category-section {
@@ -727,15 +775,6 @@ main {
 
   .latest-section {
     margin-top: 2rem;
-  }
-
-  .search-dropdown {
-    position: fixed;
-    top: 72px;
-    left: 1rem;
-    right: 1rem;
-    max-height: calc(100vh - 80px);
-    overflow-y: auto;
   }
 
   .category-grid {
@@ -756,18 +795,19 @@ main {
     font-size: 1.75rem;
   }
 
-  .search-large {
+  .search-input {
     flex-direction: column;
     gap: 0.5rem;
-  }
-
-  .search-large input {
-    padding: 0.875rem 1.25rem;
-  }
-
-  .search-large button {
-    width: 100%;
-    padding: 0.875rem 1.25rem;
+    
+    input {
+      width: 100%;
+      padding: 0.875rem 1.25rem;
+    }
+    
+    .search-btn {
+      width: 100%;
+      padding: 0.875rem 1.25rem;
+    }
   }
 
   .category-section {
@@ -789,15 +829,15 @@ main {
     justify-content: center;
     gap: 0.5rem;
     padding: 0 1rem;
-  }
-
-  .hot-tags span {
-    width: 100%;
-    margin-bottom: 0.5rem;
-  }
-
-  .hot-tags a {
-    margin: 0;
+    
+    span {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+    
+    a {
+      margin: 0;
+    }
   }
 
   main {
