@@ -796,7 +796,7 @@ main {
   }
 
   .search-input {
-    flex-direction: column;
+    // flex-direction: column;
     gap: 0.5rem;
     
     input {
@@ -805,7 +805,7 @@ main {
     }
     
     .search-btn {
-      width: 100%;
+      // width: 100%;
       padding: 0.875rem 1.25rem;
     }
   }
