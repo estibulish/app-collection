@@ -6,6 +6,50 @@
         <span>工具集合</span>
       </router-link>
 
+      
+
+      <!-- 移动端菜单 -->
+      <Transition name="slide">
+        <div v-if="showMobileMenu" class="mobile-menu">
+          <div class="menu-header">
+            <span>菜单</span>
+            <button class="close-btn" @click="showMobileMenu = false">×</button>
+          </div>
+          
+          <div class="menu-content">
+            <div class="search-wrapper">
+              <input
+                type="text"
+                placeholder="搜索工具..."
+                v-model="searchQuery"
+                @focus="showSearchResults = true"
+                @keyup.enter="handleSearch"
+              >
+            </div>
+
+            <nav class="menu-nav">
+              <router-link to="/" @click="showMobileMenu = false">首页</router-link>
+              <router-link to="/tools" @click="showMobileMenu = false">工具列表</router-link>
+              <router-link to="/favorites" @click="showMobileMenu = false">我的收藏</router-link>
+              <router-link to="/about" @click="showMobileMenu = false">关于我们</router-link>
+            </nav>
+
+            <div class="menu-footer">
+              <button class="theme-toggle" @click="toggleTheme">
+                <span v-if="themeStore.isDark" class="theme-icon">🌞</span>
+                <span v-else class="theme-icon">🌙</span>
+                <span>{{ themeStore.isDark ? '浅色模式' : '深色模式' }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+
+      <!-- 遮罩层 -->
+      <Transition name="fade">
+        <div v-if="showMobileMenu" class="menu-overlay" @click="showMobileMenu = false"></div>
+      </Transition>
+
       <nav class="main-nav">
         <router-link to="/">首页</router-link>
         <div 
@@ -110,25 +154,24 @@
           <span v-else class="theme-icon">🌙</span>
         </button>
 
-        <button 
-          class="login-btn"
-        >
-          登录
+        <!-- 移动端菜单按钮 -->
+        <button class="menu-btn" @click="showMobileMenu = true">
+          <span class="menu-icon">☰</span>
         </button>
       </div>
 
-      <div class="header-right">
+      <div class="header-right" v-if="false">
         <!-- 未登录状态 -->
-        <!-- <button 
+        <button 
           v-if="!isLoggedIn" 
           class="login-btn"
           @click="showLoginDialog = true"
         >
           登录
-        </button> -->
+        </button>
         
         <!-- 已登录状态 -->
-        <div class="user-menu" v-if="isLoggedIn">
+        <div class="user-menu" v-else>
           <button 
             class="user-btn" 
             @mouseenter="showUserDropdown = true"
@@ -204,6 +247,7 @@ let dropdownTimer = null
 const showLoginDialog = ref(false)
 const showUserDropdown = ref(false)
 const showLogoutConfirm = ref(false)
+const showMobileMenu = ref(false)
 
 const isLoggedIn = computed(() => userStore.isLoggedIn)
 const userName = computed(() => userStore.userName)
@@ -828,6 +872,161 @@ onMounted(() => {
         display: none;
       }
     }
+  }
+}
+
+.menu-btn {
+  display: none;
+  padding: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-primary);
+
+  .menu-icon {
+    font-size: 24px;
+    line-height: 1;
+  }
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 280px;
+  background: var(--bg-card);
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+
+  .menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 1.125rem;
+    font-weight: 500;
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 4px;
+
+      &:hover {
+        color: var(--text-primary);
+      }
+    }
+  }
+
+  .menu-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .search-wrapper {
+    input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      background: var(--bg-main);
+      color: var(--text-primary);
+    }
+  }
+
+  .menu-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    a {
+      padding: 12px;
+      color: var(--text-primary);
+      text-decoration: none;
+      border-radius: 6px;
+      transition: all 0.2s;
+
+      &:hover,
+      &.router-link-active {
+        background: var(--bg-hover);
+        color: var(--primary);
+      }
+    }
+  }
+
+  .menu-footer {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+
+    .theme-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      cursor: pointer;
+      border-radius: 6px;
+
+      &:hover {
+        background: var(--bg-hover);
+      }
+    }
+  }
+}
+
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+/* 动画 */
+.slide-enter-active,
+.slide-leave-active {
+  transition: transform 0.3s ease;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  transform: translateX(100%);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+@media (max-width: 768px) {
+  .menu-btn {
+    display: block;
+  }
+
+  .main-nav,
+  .header-right {
+    display: none;
   }
 }
 </style> 
