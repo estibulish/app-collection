@@ -5,6 +5,7 @@
       <router-view></router-view>
     </main>
     <Footer />
+    <WechatQrcode />
   </div>
 </template>
 
@@ -13,6 +14,7 @@ import { onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
+import WechatQrcode from './components/WechatQrcode.vue'
 
 const userStore = useUserStore()
 

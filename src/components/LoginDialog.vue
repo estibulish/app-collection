@@ -16,20 +16,20 @@
         >×</button>
         
         <h2>登录</h2>
-        <div class="login-tabs">
-          <!-- <button 
+        <!-- <div class="login-tabs">
+          <button 
             :class="['tab-btn', { active: loginType === 'email' }]"
             @click="loginType = 'email'"
           >
             邮箱登录
-          </button> -->
-          <!-- <button 
+          </button>
+          <button 
             :class="['tab-btn', { active: loginType === 'wechat' }]"
             @click="loginType = 'wechat'"
           >
             微信登录
-          </button> -->
-        </div>
+          </button>
+        </div> -->
 
         <!-- 邮箱登录表单 -->
         <form v-if="loginType === 'email'" @submit.prevent="handleEmailLogin" class="login-form">

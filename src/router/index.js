@@ -202,7 +202,7 @@ const router = createRouter({
 
 // 修改路由守卫
 router.beforeEach((to, from, next) => {
-  const userStore = useUserStore()
+  // const userStore = useUserStore()
   
   // 设置页面标题
   document.title = to.meta.title ? 
@@ -210,19 +210,19 @@ router.beforeEach((to, from, next) => {
     '工具集合 - 便捷高效的在线工具箱'
   
   // 需要登录的路由
-  if (to.meta.requiresAuth && !userStore.isLoggedIn) {
-    next({
-      path: '/login',
-      query: { redirect: to.fullPath }
-    })
-    return
-  }
+  // if (to.meta.requiresAuth && !userStore.isLoggedIn) {
+  //   next({
+  //     path: '/login',
+  //     query: { redirect: to.fullPath }
+  //   })
+  //   return
+  // }
   
   // 已登录用户访问登录页面，重定向到首页
-  if (to.path === '/login' && userStore.isLoggedIn) {
-    next('/')
-    return
-  }
+  // if (to.path === '/login' && userStore.isLoggedIn) {
+  //   next('/')
+  //   return
+  // }
   
   next()
 })

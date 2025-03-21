@@ -109,20 +109,26 @@
           <span v-if="themeStore.isDark" class="theme-icon">🌞</span>
           <span v-else class="theme-icon">🌙</span>
         </button>
+
+        <button 
+          class="login-btn"
+        >
+          登录
+        </button>
       </div>
 
       <div class="header-right">
         <!-- 未登录状态 -->
-        <button 
+        <!-- <button 
           v-if="!isLoggedIn" 
           class="login-btn"
           @click="showLoginDialog = true"
         >
           登录
-        </button>
+        </button> -->
         
         <!-- 已登录状态 -->
-        <div class="user-menu" v-else>
+        <div class="user-menu" v-if="isLoggedIn">
           <button 
             class="user-btn" 
             @mouseenter="showUserDropdown = true"
