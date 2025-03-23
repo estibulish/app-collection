@@ -545,6 +545,7 @@ watch([selectedCategories, frequency, sortBy], () => {
 
 .tool-tags {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem;
 }
 

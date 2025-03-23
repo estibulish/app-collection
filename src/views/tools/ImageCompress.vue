@@ -1,125 +1,140 @@
 <template>
-  <div class="image-compress">
+  <div class="image-compress-page">
     <div class="tool-header">
-      <h1>图片压缩工具</h1>
-      <p class="tool-desc">在线图片压缩工具，支持JPG、PNG等格式，快速压缩不失真</p>
+      <div class="header-content">
+        <h1>图片压缩工具</h1>
+        <p class="tool-desc">在线图片压缩工具，支持批量压缩、自定义压缩质量，快速减小图片体积</p>
+      </div>
+      <div class="tool-actions">
+        <FavoriteButton tool-id="image-compress" />
+      </div>
     </div>
-
-    <div class="upload-zone" 
-      @dragover.prevent 
-      @drop.prevent="handleDrop"
-      :class="{ 'is-dragover': isDragover }"
-      @dragenter="isDragover = true"
-      @dragleave="isDragover = false"
-    >
-      <div class="upload-content">
-        <div class="upload-icon">📁</div>
-        <div class="upload-text">
-          <template v-if="!isProcessing">
-            拖放图片到这里，或
-            <label class="upload-button">
-              点击上传
+    
+    <!-- 工具主体内容 -->
+    <div class="compress-container">
+      <!-- 上传区域 -->
+      <div class="upload-area">
+        <div class="upload-zone" 
+          @dragover.prevent 
+          @drop.prevent="handleDrop"
+          :class="{ 'is-dragover': isDragover }"
+          @dragenter="isDragover = true"
+          @dragleave="isDragover = false"
+        >
+          <div class="upload-content">
+            <div class="upload-icon">📁</div>
+            <div class="upload-text">
+              <template v-if="!isProcessing">
+                拖放图片到这里，或
+                <label class="upload-button">
+                  点击上传
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    multiple 
+                    @change="handleFileSelect"
+                    ref="fileInput"
+                  >
+                </label>
+              </template>
+              <template v-else>
+                正在处理中...
+              </template>
+            </div>
+            <div class="upload-hint">支持 JPG、PNG 格式，最大 10MB</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 压缩设置 -->
+      <div class="compress-settings">
+        <h2>压缩设置</h2>
+        <div class="settings-group">
+          <label class="setting-item">
+            <span>压缩质量</span>
+            <div class="quality-slider">
               <input 
-                type="file" 
-                accept="image/*" 
-                multiple 
-                @change="handleFileSelect"
-                ref="fileInput"
+                type="range" 
+                v-model="quality" 
+                min="0" 
+                max="100" 
+                step="1"
               >
-            </label>
-          </template>
-          <template v-else>
-            正在处理中...
-          </template>
-        </div>
-        <div class="upload-hint">支持 JPG、PNG 格式，最大 10MB</div>
-      </div>
-    </div>
-
-    <div class="settings-panel" v-if="imageList.length > 0">
-      <h2>压缩设置</h2>
-      <div class="settings-group">
-        <label class="setting-item">
-          <span>压缩质量</span>
-          <div class="quality-slider">
+              <span class="quality-value">{{ quality }}%</span>
+            </div>
+          </label>
+          <label class="setting-item">
+            <span>最大宽度</span>
             <input 
-              type="range" 
-              v-model="quality" 
-              min="0" 
-              max="100" 
-              step="1"
+              type="number" 
+              v-model="maxWidth" 
+              min="100" 
+              step="100"
+              placeholder="不限制"
             >
-            <span class="quality-value">{{ quality }}%</span>
-          </div>
-        </label>
-        <label class="setting-item">
-          <span>最大宽度</span>
-          <input 
-            type="number" 
-            v-model="maxWidth" 
-            min="100" 
-            step="100"
-            placeholder="不限制"
+          </label>
+          <label class="setting-item">
+            <span>保持格式</span>
+            <input type="checkbox" v-model="keepFormat">
+          </label>
+        </div>
+        <div class="settings-actions">
+          <button class="action-btn primary" @click="compressAll" :disabled="isProcessing">
+            开始压缩
+          </button>
+          <button class="action-btn" @click="clearAll" :disabled="isProcessing">
+            清空列表
+          </button>
+        </div>
+      </div>
+      
+      <!-- 压缩结果 -->
+      <div class="compress-results">
+        <div class="image-list" v-if="imageList.length > 0">
+          <div 
+            v-for="(image, index) in imageList" 
+            :key="index"
+            class="image-item"
+            :class="{ 'is-compressed': image.compressed }"
           >
-        </label>
-        <label class="setting-item">
-          <span>保持格式</span>
-          <input type="checkbox" v-model="keepFormat">
-        </label>
-      </div>
-      <div class="settings-actions">
-        <button class="action-btn primary" @click="compressAll" :disabled="isProcessing">
-          开始压缩
-        </button>
-        <button class="action-btn" @click="clearAll" :disabled="isProcessing">
-          清空列表
-        </button>
-      </div>
-    </div>
-
-    <div class="image-list" v-if="imageList.length > 0">
-      <div 
-        v-for="(image, index) in imageList" 
-        :key="index"
-        class="image-item"
-        :class="{ 'is-compressed': image.compressed }"
-      >
-        <div class="image-preview">
-          <img :src="image.preview" :alt="image.file.name">
-        </div>
-        <div class="image-info">
-          <div class="image-name">{{ image.file.name }}</div>
-          <div class="image-size">
-            <template v-if="image.compressed">
-              {{ formatSize(image.file.size) }} → {{ formatSize(image.compressedSize) }}
-              <span class="compress-rate">
-                ({{ calculateRate(image.file.size, image.compressedSize) }})
-              </span>
-            </template>
-            <template v-else>
-              {{ formatSize(image.file.size) }}
-            </template>
-          </div>
-          <div class="image-status">
-            <template v-if="image.error">
-              <span class="status-error">{{ image.error }}</span>
-            </template>
-            <template v-else-if="image.compressed">
-              <button class="action-btn small" @click="downloadImage(image)">下载</button>
-              <button class="action-btn small" @click="removeImage(index)">删除</button>
-            </template>
-            <template v-else>
-              <span class="status-waiting">等待压缩</span>
-            </template>
+            <div class="image-preview">
+              <img :src="image.preview" :alt="image.file.name">
+            </div>
+            <div class="image-info">
+              <div class="image-name">{{ image.file.name }}</div>
+              <div class="image-size">
+                <template v-if="image.compressed">
+                  {{ formatSize(image.file.size) }} → {{ formatSize(image.compressedSize) }}
+                  <span class="compress-rate">
+                    ({{ calculateRate(image.file.size, image.compressedSize) }})
+                  </span>
+                </template>
+                <template v-else>
+                  {{ formatSize(image.file.size) }}
+                </template>
+              </div>
+              <div class="image-status">
+                <template v-if="image.error">
+                  <span class="status-error">{{ image.error }}</span>
+                </template>
+                <template v-else-if="image.compressed">
+                  <button class="action-btn small" @click="downloadImage(image)">下载</button>
+                  <button class="action-btn small" @click="removeImage(index)">删除</button>
+                </template>
+                <template v-else>
+                  <span class="status-waiting">等待压缩</span>
+                </template>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="batch-actions" v-if="hasCompressedImages">
-      <button class="action-btn primary" @click="downloadAll">
-        打包下载全部
-      </button>
+        <div class="batch-actions" v-if="hasCompressedImages">
+          <button class="action-btn primary" @click="downloadAll">
+            打包下载全部
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -207,22 +222,59 @@ const compressImage = (image) => {
       canvas.height = height
 
       const ctx = canvas.getContext('2d')
+      // 使用更好的图像平滑算法
+      ctx.imageSmoothingEnabled = true
+      ctx.imageSmoothingQuality = 'high'
       ctx.drawImage(img, 0, 0, width, height)
 
-      // 确定输出格式
+      // 根据图片类型选择不同的压缩策略
       let outputType = keepFormat.value ? image.file.type : 'image/jpeg'
+      let outputQuality = quality.value / 100
+
+      // 对PNG格式特殊处理
+      if (outputType === 'image/png') {
+        // PNG格式使用无损压缩
+        outputQuality = undefined
+        
+        // 如果原图是PNG但允许转换格式，且图片不包含透明通道，则转换为JPEG
+        if (!keepFormat.value) {
+          const imageData = ctx.getImageData(0, 0, width, height)
+          const hasTransparency = hasTransparentPixels(imageData)
+          if (!hasTransparency) {
+            outputType = 'image/jpeg'
+            outputQuality = quality.value / 100
+          }
+        }
+      }
       
       canvas.toBlob((blob) => {
         if (!blob) {
           reject(new Error('压缩失败'))
           return
         }
-        resolve(blob)
-      }, outputType, quality.value / 100)
+        
+        // 如果压缩后的大小反而变大了，则返回原图
+        if (blob.size > image.file.size) {
+          resolve(image.file)
+        } else {
+          resolve(blob)
+        }
+      }, outputType, outputQuality)
     }
     img.onerror = () => reject(new Error('图片加载失败'))
     img.src = image.preview
   })
+}
+
+// 检查图片是否包含透明通道
+const hasTransparentPixels = (imageData) => {
+  const data = imageData.data
+  for (let i = 3; i < data.length; i += 4) {
+    if (data[i] < 255) {
+      return true
+    }
+  }
+  return false
 }
 
 // 压缩所有图片
@@ -299,7 +351,7 @@ const calculateRate = (original, compressed) => {
 </script>
 
 <style lang="scss" scoped>
-.image-compress {
+.image-compress-page {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem 1rem;
@@ -320,6 +372,15 @@ const calculateRate = (original, compressed) => {
     color: var(--text-secondary);
     font-size: 1rem;
   }
+}
+
+.compress-container {
+  display: flex;
+  gap: 2rem;
+}
+
+.upload-area {
+  flex: 1;
 }
 
 .upload-zone {
@@ -369,7 +430,8 @@ const calculateRate = (original, compressed) => {
   }
 }
 
-.settings-panel {
+.compress-settings {
+  flex: 1;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 12px;
@@ -495,6 +557,15 @@ const calculateRate = (original, compressed) => {
   }
 }
 
+.compress-results {
+  flex: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
 .image-list {
   display: grid;
   gap: 1rem;
@@ -575,7 +646,7 @@ const calculateRate = (original, compressed) => {
 }
 
 @media (max-width: 768px) {
-  .image-compress {
+  .image-compress-page {
     padding: 1.5rem 1rem;
   }
 
@@ -587,11 +658,15 @@ const calculateRate = (original, compressed) => {
     }
   }
 
+  .compress-container {
+    flex-direction: column;
+  }
+
   .upload-zone {
     padding: 2rem 1rem;
   }
 
-  .settings-panel {
+  .compress-settings {
     padding: 1.25rem;
   }
 

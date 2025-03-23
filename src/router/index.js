@@ -178,6 +178,46 @@ const routes = [
     }
   },
   {
+    path: '/tools/image-compress',
+    name: 'ImageCompress',
+    component: () => import('../views/tools/ImageCompress.vue'),
+    meta: {
+      title: '图片压缩工具'
+    }
+  },
+  {
+    path: '/tools/image-convert',
+    name: 'ImageConvert',
+    component: () => import('../views/tools/ImageConvert.vue'),
+    meta: {
+      title: '图片格式转换工具'
+    }
+  },
+  {
+    path: '/tools/image-watermark',
+    name: 'ImageWatermark',
+    component: () => import('../views/tools/ImageWatermark.vue'),
+    meta: {
+      title: '图片水印工具'
+    }
+  },
+  {
+    path: '/tools/image-merge',
+    name: 'ImageMerge',
+    component: () => import('../views/tools/ImageMerge.vue'),
+    meta: {
+      title: '图片拼接工具'
+    }
+  },
+  {
+    path: '/tools/image-background',
+    name: 'ImageBackground',
+    component: () => import('../views/tools/ImageBackground.vue'),
+    meta: {
+      title: '图片背景移除工具'
+    }
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () => import('../views/Login.vue'),
