@@ -1,7 +1,10 @@
 <template>
     <section class="hero-section">
       <div class="hero-content">
-        <h1>便捷高效的在线工具集合</h1>
+        <h1 class="hero-title">
+          便捷高效的在线工具集合
+          <Clock />
+        </h1>
         <p class="subtitle">为提高工作效率而生</p>
         <div class="search-container">
           <div class="search-input">
@@ -132,6 +135,7 @@ import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import { categories, tools, getHotTools, getNewTools } from '../config/tools'
 import { useToolStore } from '@/stores/tool'
+import Clock from '@/components/Clock.vue'
 
 const router = useRouter();
 const toolStore = useToolStore();
@@ -868,5 +872,16 @@ main {
   .hero-content .subtitle {
     font-size: 0.875rem;
   }
+}
+
+.hero-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 </style> 

@@ -255,7 +255,16 @@ const userAvatar = computed(() => userStore.userAvatar)
 
 // 常用工具列表 - 使用配置中的热门工具
 const commonTools = computed(() => {
-  return getHotTools().slice(0, 4) // 只显示前4个热门工具
+  return [
+    ...getHotTools().slice(0, 4), // 只显示前4个热门工具
+    {
+      id: 'css-effects',
+      name: 'CSS 效果合集',
+      icon: '🎨',
+      path: '/tools/css-effects',
+      description: '常用 CSS 效果展示和代码片段'
+    }
+  ]
 })
 
 // 搜索结果 - 使用配置中的搜索函数

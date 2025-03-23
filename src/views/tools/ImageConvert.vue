@@ -62,15 +62,25 @@ const targetFormat = ref('jpeg')
 const quality = ref(80)
 
 const triggerFileInput = () => {
-  fileInput.value?.click()
+  if (fileInput.value) {
+    fileInput.value.click()
+  }
 }
 
 const handleFileSelect = (event) => {
-  // 处理文件选择
+  const files = event.target.files
+  if (files && files.length > 0) {
+    // TODO: 处理文件选择逻辑
+    console.log('Selected files:', files)
+  }
 }
 
 const handleDrop = (event) => {
-  // 处理文件拖放
+  const files = event.dataTransfer?.files
+  if (files && files.length > 0) {
+    // TODO: 处理文件拖放逻辑
+    console.log('Dropped files:', files)
+  }
 }
 </script>
 
@@ -79,7 +89,123 @@ const handleDrop = (event) => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-}
 
-// ... 其他样式与 ImageCompress.vue 类似 ...
+  .tool-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+
+    .header-content {
+      h1 {
+        font-size: 2rem;
+        margin: 0 0 0.5rem;
+      }
+
+      .tool-desc {
+        color: #666;
+        margin: 0;
+      }
+    }
+  }
+
+  .convert-container {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+
+    .upload-area {
+      margin-bottom: 2rem;
+
+      .upload-zone {
+        border: 2px dashed #ddd;
+        border-radius: 8px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s;
+        cursor: pointer;
+
+        &:hover {
+          border-color: #409eff;
+          background: rgba(64, 158, 255, 0.05);
+        }
+
+        input[type="file"] {
+          display: none;
+        }
+
+        .upload-content {
+          .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+          }
+
+          .upload-text {
+            margin-bottom: 0.5rem;
+            
+            .upload-button {
+              color: #409eff;
+              background: none;
+              border: none;
+              cursor: pointer;
+              padding: 0;
+              font-size: inherit;
+
+              &:hover {
+                text-decoration: underline;
+              }
+            }
+          }
+
+          .upload-hint {
+            color: #999;
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+
+    .convert-settings {
+      h2 {
+        font-size: 1.5rem;
+        margin: 0 0 1rem;
+      }
+
+      .settings-group {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        label {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+
+          select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+          }
+
+          .quality-control {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+
+            input[type="range"] {
+              flex: 1;
+              max-width: 200px;
+            }
+
+            span {
+              min-width: 3rem;
+            }
+          }
+        }
+      }
+    }
+  }
+}
 </style> 

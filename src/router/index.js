@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import { useUserStore } from '@/stores/user'
+import CssEffects from '@/views/tools/CssEffects.vue'
 
 /**
  * @type {import('vue-router').RouteRecordRaw[]}
@@ -223,6 +224,15 @@ const routes = [
     component: () => import('../views/Login.vue'),
     meta: {
       title: '登录'
+    }
+  },
+  {
+    path: '/tools/css-effects',
+    name: 'CssEffects',
+    component: CssEffects,
+    meta: {
+      title: 'CSS 效果合集 - 工具集合',
+      requiresAuth: false
     }
   },
   {

@@ -143,60 +143,248 @@ const downloadResult = () => {
 </script>
 
 <style lang="scss" scoped>
+@use "sass:color";
+
 .image-background-page {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-}
 
-.background-container {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
-.preview-area {
-  display: flex;
-  gap: 2rem;
-  
-  .preview-container {
-    flex: 1;
+  .tool-header {
     display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+
+    .header-content {
+      h1 {
+        font-size: 2rem;
+        margin: 0 0 0.5rem;
+      }
+
+      .tool-desc {
+        color: #666;
+        margin: 0;
+      }
+    }
+  }
+
+  .background-container {
+    display: flex;
+    flex-direction: column;
     gap: 2rem;
-    
-    .preview {
-      flex: 1;
-      
-      h3 {
-        margin-bottom: 1rem;
-        color: var(--text-primary);
-        font-size: 1rem;
-      }
-      
-      img {
-        width: 100%;
+    margin-top: 1rem;
+
+    .upload-area {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+
+      .upload-zone {
+        border: 2px dashed #ddd;
         border-radius: 8px;
-        border: 1px solid var(--border-color);
-      }
-      
-      .processing {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1rem;
         padding: 2rem;
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        background: var(--bg-card);
+        text-align: center;
+        transition: all 0.3s;
+        cursor: pointer;
+
+        &:hover {
+          border-color: #409eff;
+          background: rgba(64, 158, 255, 0.05);
+        }
+
+        input[type="file"] {
+          display: none;
+        }
+
+        .upload-content {
+          .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+          }
+
+          .upload-text {
+            margin-bottom: 0.5rem;
+            
+            .upload-button {
+              color: #409eff;
+              background: none;
+              border: none;
+              cursor: pointer;
+              padding: 0;
+              font-size: inherit;
+
+              &:hover {
+                text-decoration: underline;
+              }
+            }
+          }
+
+          .upload-hint {
+            color: #999;
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+
+    .preview-area {
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      gap: 2rem;
+      
+      .preview-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
         
-        .loading-spinner {
-          width: 40px;
-          height: 40px;
-          border: 3px solid var(--border-color);
-          border-top-color: var(--primary);
-          border-radius: 50%;
-          animation: spin 1s linear infinite;
+        .preview {
+          background: #fff;
+          border-radius: 8px;
+          box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+          padding: 1.5rem;
+          
+          h3 {
+            margin: 0 0 1rem;
+            color: #333;
+            font-size: 1.2rem;
+            font-weight: 500;
+          }
+          
+          img {
+            width: 100%;
+            border-radius: 4px;
+            display: block;
+          }
+          
+          .processing {
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            color: #666;
+            
+            .loading-spinner {
+              width: 40px;
+              height: 40px;
+              border: 3px solid #f3f3f3;
+              border-top-color: #409eff;
+              border-radius: 50%;
+              animation: spin 1s linear infinite;
+            }
+          }
+        }
+      }
+
+      .settings-panel {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        
+        h2 {
+          font-size: 1.5rem;
+          margin: 0 0 1.5rem;
+          color: #333;
+        }
+
+        .settings-group {
+          display: flex;
+          flex-direction: column;
+          gap: 1.2rem;
+
+          label {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+
+            select, input[type="text"], input[type="number"] {
+              padding: 0.5rem;
+              border: 1px solid #ddd;
+              border-radius: 4px;
+              width: 100%;
+              
+              &:focus {
+                border-color: #409eff;
+                outline: none;
+              }
+            }
+
+            input[type="color"] {
+              width: 100%;
+              height: 40px;
+              padding: 2px;
+              border: 1px solid #ddd;
+              border-radius: 4px;
+              cursor: pointer;
+            }
+
+            .blur-control {
+              display: flex;
+              align-items: center;
+              gap: 1rem;
+
+              input[type="range"] {
+                flex: 1;
+              }
+
+              span {
+                min-width: 2rem;
+                text-align: right;
+              }
+            }
+          }
+        }
+
+        .panel-actions {
+          margin-top: 2rem;
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+
+          button {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+
+            .tool-icon {
+              font-size: 1.2rem;
+            }
+
+            &:disabled {
+              opacity: 0.6;
+              cursor: not-allowed;
+            }
+
+            &.apply {
+              background: #409eff;
+              color: white;
+
+              &:not(:disabled):hover {
+                background: color.scale(#409eff, $lightness: -10%);
+              }
+            }
+
+            &.download {
+              background: #67c23a;
+              color: white;
+
+              &:not(:disabled):hover {
+                background: color.scale(#67c23a, $lightness: -10%);
+              }
+            }
+          }
         }
       }
     }
@@ -208,20 +396,4 @@ const downloadResult = () => {
     transform: rotate(360deg);
   }
 }
-
-.settings-panel {
-  width: 300px;
-  padding: 1.5rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  
-  h2 {
-    margin-bottom: 1.5rem;
-    color: var(--text-primary);
-    font-size: 1.25rem;
-  }
-}
-
-// ... 其他样式与 ImageCompress.vue 类似 ...
 </style> 

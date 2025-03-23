@@ -256,6 +256,18 @@ export const tools = [
     isHot: false,
     isNew: true,
     updateTime: '2024-03-20'
+  },
+  {
+    id: 'css-effects',
+    name: 'CSS 效果合集',
+    description: '常用 CSS 效果展示和代码片段',
+    icon: '🎨',
+    path: '/tools/css-effects',
+    categories: ['dev', 'frontend'],
+    tags: ['CSS', '动画', '特效', '样式'],
+    isHot: true,
+    isNew: true,
+    updateTime: '2024-03-20'
   }
 ]
 

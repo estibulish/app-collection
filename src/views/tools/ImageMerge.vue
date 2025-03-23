@@ -148,74 +148,271 @@ const resetSettings = () => {
 </script>
 
 <style lang="scss" scoped>
+@use "sass:color";
+
 .image-merge-page {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-}
 
-.merge-container {
-  display: flex;
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
-.image-list {
-  margin-top: 2rem;
-  
-  .image-item {
+  .tool-header {
     display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.5rem;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    margin-bottom: 0.5rem;
-    background: var(--bg-card);
-    
-    .drag-handle {
-      cursor: move;
-      color: var(--text-secondary);
-      user-select: none;
-    }
-    
-    img {
-      width: 60px;
-      height: 60px;
-      object-fit: cover;
-      border-radius: 4px;
-    }
-    
-    .image-info {
-      flex: 1;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      
-      .image-name {
-        font-size: 0.875rem;
-        color: var(--text-primary);
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+
+    .header-content {
+      h1 {
+        font-size: 2rem;
+        margin: 0 0 0.5rem;
       }
-      
-      .remove-btn {
-        padding: 0.25rem;
-        border: none;
-        background: none;
-        color: var(--text-secondary);
+
+      .tool-desc {
+        color: #666;
+        margin: 0;
+      }
+    }
+  }
+
+  .merge-container {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 2rem;
+    margin-top: 1rem;
+
+    .upload-area {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+
+      .upload-zone {
+        border: 2px dashed #ddd;
+        border-radius: 8px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s;
         cursor: pointer;
-        
+
         &:hover {
-          color: var(--error);
+          border-color: #409eff;
+          background: rgba(64, 158, 255, 0.05);
+        }
+
+        input[type="file"] {
+          display: none;
+        }
+
+        .upload-content {
+          .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+          }
+
+          .upload-text {
+            margin-bottom: 0.5rem;
+            
+            .upload-button {
+              color: #409eff;
+              background: none;
+              border: none;
+              cursor: pointer;
+              padding: 0;
+              font-size: inherit;
+
+              &:hover {
+                text-decoration: underline;
+              }
+            }
+          }
+
+          .upload-hint {
+            color: #999;
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+
+    .merge-settings {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+
+      h2 {
+        font-size: 1.5rem;
+        margin: 0 0 1.5rem;
+      }
+
+      .settings-group {
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+
+        label {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+
+          select, input[type="text"], input[type="number"] {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            
+            &:focus {
+              border-color: #409eff;
+              outline: none;
+            }
+          }
+
+          input[type="color"] {
+            width: 100%;
+            height: 40px;
+            padding: 2px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+          }
+
+          .spacing-control {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+
+            input[type="range"] {
+              flex: 1;
+            }
+
+            span {
+              min-width: 3rem;
+            }
+          }
+        }
+      }
+
+      .panel-actions {
+        margin-top: 2rem;
+        display: flex;
+        gap: 1rem;
+
+        button {
+          flex: 1;
+          padding: 0.8rem;
+          border-radius: 4px;
+          border: none;
+          cursor: pointer;
+          font-size: 1rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          transition: all 0.2s;
+
+          .tool-icon {
+            font-size: 1.2rem;
+          }
+
+          &.apply {
+            background: #409eff;
+            color: white;
+
+            &:hover {
+              background: color.scale(#409eff, $lightness: -10%);
+            }
+          }
+
+          &.cancel {
+            background: #f5f7fa;
+            color: #606266;
+
+            &:hover {
+              background: color.scale(#f5f7fa, $lightness: -5%);
+            }
+          }
         }
       }
     }
   }
-  
-  .ghost {
-    opacity: 0.5;
-    background: var(--primary-50);
+
+  .image-list {
+    grid-column: 1 / -1;
+    margin-top: 2rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    
+    .image-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      background: #fff;
+      transition: all 0.2s;
+      
+      &:hover {
+        border-color: #409eff;
+        background: rgba(64, 158, 255, 0.02);
+      }
+      
+      .drag-handle {
+        cursor: move;
+        color: #999;
+        user-select: none;
+        padding: 0.5rem;
+        
+        &:hover {
+          color: #666;
+        }
+      }
+      
+      img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 4px;
+      }
+      
+      .image-info {
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        
+        .image-name {
+          font-size: 0.9rem;
+          color: #333;
+          max-width: 300px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        
+        .remove-btn {
+          padding: 0.5rem;
+          border: none;
+          background: none;
+          color: #999;
+          cursor: pointer;
+          transition: all 0.2s;
+          
+          &:hover {
+            color: #ff4d4f;
+          }
+        }
+      }
+    }
+    
+    .ghost {
+      opacity: 0.5;
+      background: rgba(64, 158, 255, 0.1);
+      border: 1px dashed #409eff;
+    }
   }
 }
-
-// ... 其他样式与 ImageCompress.vue 类似 ...
 </style> 
