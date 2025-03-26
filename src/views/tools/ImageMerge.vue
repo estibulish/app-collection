@@ -315,11 +315,11 @@ const resetSettings = () => {
           }
 
           &.apply {
-            background: #409eff;
+            background: var(--primary);
             color: white;
 
             &:hover {
-              background: color.scale(#409eff, $lightness: -10%);
+              background: var(--primary-dark);
             }
           }
 

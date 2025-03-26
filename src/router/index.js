@@ -24,11 +24,11 @@ const routes = [
     }
   },
   {
-    path: '/tools/json-formatter',
+    path: '/tools/data/json-formatter',
     name: 'JsonFormatter',
-    component: () => import('../views/tools/JsonFormatter.vue'),
+    component: () => import('../views/tools/data/JsonFormatter.vue'),
     meta: {
-      title: 'JSON格式化工具'
+      title: 'JSON 格式化工具'
     }
   },
   {
@@ -233,6 +233,206 @@ const routes = [
     meta: {
       title: 'CSS 效果合集 - 工具集合',
       requiresAuth: false
+    }
+  },
+  {
+    path: '/tools/hash-generator',
+    name: 'HashGenerator',
+    component: () => import('../views/tools/HashGenerator.vue'),
+    meta: {
+      title: '哈希生成器'
+    }
+  },
+  {
+    path: '/tools/aes-encrypt',
+    name: 'AesEncrypt',
+    component: () => import('../views/tools/AesEncrypt.vue'),
+    meta: {
+      title: 'AES 加解密工具'
+    }
+  },
+  {
+    path: '/tools/rsa-encrypt',
+    name: 'RsaEncrypt',
+    component: () => import('../views/tools/RsaEncrypt.vue'),
+    meta: {
+      title: 'RSA 加解密工具'
+    }
+  },
+  {
+    path: '/tools/jwt-decoder',
+    name: 'JwtDecoder',
+    component: () => import('../views/tools/JwtDecoder.vue'),
+    meta: {
+      title: 'JWT 解析器'
+    }
+  },
+  {
+    path: '/tools/length-converter',
+    name: 'LengthConverter',
+    component: () => import('../views/tools/LengthConverter.vue'),
+    meta: {
+      title: '长度单位换算'
+    }
+  },
+  {
+    path: '/tools/area-converter',
+    name: 'AreaConverter',
+    component: () => import('../views/tools/AreaConverter.vue'),
+    meta: {
+      title: '面积单位换算'
+    }
+  },
+  {
+    path: '/tools/weight-converter',
+    name: 'WeightConverter',
+    component: () => import('../views/tools/WeightConverter.vue'),
+    meta: {
+      title: '重量单位换算'
+    }
+  },
+  {
+    path: '/tools/temperature-converter',
+    name: 'TemperatureConverter',
+    component: () => import('../views/tools/TemperatureConverter.vue'),
+    meta: {
+      title: '温度单位换算'
+    }
+  },
+  {
+    path: '/tools/number/base-converter',
+    name: 'NumberBase',
+    component: () => import('../views/tools/number/NumberBase.vue'),
+    meta: {
+      title: '进制转换工具'
+    }
+  },
+  {
+    path: '/tools/number/calculator',
+    name: 'Calculator',
+    component: () => import('../views/tools/number/Calculator.vue'),
+    meta: {
+      title: '科学计算器'
+    }
+  },
+  {
+    path: '/tools/number/random',
+    name: 'RandomNumber',
+    component: () => import('../views/tools/number/RandomNumber.vue'),
+    meta: {
+      title: '随机数生成器'
+    }
+  },
+  {
+    path: '/tools/number/unit-price',
+    name: 'UnitPrice',
+    component: () => import('../views/tools/number/UnitPrice.vue'),
+    meta: {
+      title: '单价计算器'
+    }
+  },
+  {
+    path: '/tools/number/percent',
+    name: 'PercentCalculator',
+    component: () => import('../views/tools/number/PercentCalculator.vue'),
+    meta: {
+      title: '百分比计算器'
+    }
+  },
+  {
+    path: '/tools/number/loan',
+    name: 'LoanCalculator',
+    component: () => import('../views/tools/number/LoanCalculator.vue'),
+    meta: {
+      title: '贷款计算器'
+    }
+  },
+  {
+    path: '/tools/text/diff',
+    name: 'TextDiff',
+    component: () => import('../views/tools/text/TextDiff.vue'),
+    meta: {
+      title: '文本对比工具'
+    }
+  },
+  {
+    path: '/tools/text/stats',
+    name: 'TextStats',
+    component: () => import('../views/tools/text/TextStats.vue'),
+    meta: {
+      title: '文本统计工具'
+    }
+  },
+  {
+    path: '/tools/text/case',
+    name: 'TextCase',
+    component: () => import('../views/tools/text/TextCase.vue'),
+    meta: {
+      title: '文本转换工具'
+    }
+  },
+  {
+    path: '/tools/text/dedupe',
+    name: 'TextDedupe',
+    component: () => import('../views/tools/text/TextDedupe.vue'),
+    meta: {
+      title: '文本去重工具'
+    }
+  },
+  {
+    path: '/tools/text/sort',
+    name: 'TextSort',
+    component: () => import('../views/tools/text/TextSort.vue'),
+    meta: {
+      title: '文本排序工具'
+    }
+  },
+  {
+    path: '/tools/text/replace',
+    name: 'TextReplace',
+    component: () => import('../views/tools/text/TextReplace.vue'),
+    meta: {
+      title: '文本替换工具'
+    }
+  },
+  {
+    path: '/tools/text/format',
+    name: 'TextFormat',
+    component: () => import('../views/tools/text/TextFormat.vue'),
+    meta: {
+      title: '文本格式化工具'
+    }
+  },
+  {
+    path: '/tools/text/to-table',
+    name: 'TextToTable',
+    component: () => import('../views/tools/text/TextToTable.vue'),
+    meta: {
+      title: '文本转表格工具'
+    }
+  },
+  {
+    path: '/tools/office/excel-to-json',
+    name: 'ExcelToJson',
+    component: () => import('../views/tools/office/ExcelToJson.vue'),
+    meta: {
+      title: 'Excel 转 JSON 工具'
+    }
+  },
+  {
+    path: '/tools/office/pdf-to-word',
+    name: 'PdfToWord',
+    component: () => import('../views/tools/office/PdfToWord.vue'),
+    meta: {
+      title: 'PDF 转 Word 工具'
+    }
+  },
+  {
+    path: '/tools/office/word-to-pdf',
+    name: 'WordToPdf',
+    component: () => import('../views/tools/office/WordToPdf.vue'),
+    meta: {
+      title: 'Word 转 PDF 工具'
     }
   },
   {

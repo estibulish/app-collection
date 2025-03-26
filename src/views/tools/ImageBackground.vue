@@ -368,20 +368,20 @@ const downloadResult = () => {
             }
 
             &.apply {
-              background: #409eff;
+              background: var(--primary);
               color: white;
 
               &:not(:disabled):hover {
-                background: color.scale(#409eff, $lightness: -10%);
+                background: var(--primary-dark);
               }
             }
 
             &.download {
-              background: #67c23a;
+              background: var(--primary);
               color: white;
 
               &:not(:disabled):hover {
-                background: color.scale(#67c23a, $lightness: -10%);
+                background: var(--primary-dark);
               }
             }
           }

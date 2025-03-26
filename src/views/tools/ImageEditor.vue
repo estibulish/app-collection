@@ -68,7 +68,7 @@ const handleDrop = (event) => {
 const loadImage = (file) => {
   const reader = new FileReader()
   reader.onload = (e) => {
-    imageUrl.value = e.target.result
+      imageUrl.value = e.target.result
   }
   reader.readAsDataURL(file)
 }
@@ -194,7 +194,7 @@ favoriteStore.updateLastUsed('image-editor')
   .editor-container {
     min-height: 500px;
   }
-  
+
   .tool-header {
     flex-direction: column;
     gap: 1rem;

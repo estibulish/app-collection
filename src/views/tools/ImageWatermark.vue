@@ -490,13 +490,13 @@ const removeImage = () => {
             transition: all 0.2s;
             
             &:hover {
-              border-color: #409eff;
-              background: rgba(64, 158, 255, 0.05);
+              border-color: var(--primary);
+              background: rgba(var(--primary), 0.05);
             }
             
             &.active {
-              background: #409eff;
-              border-color: #409eff;
+              background: var(--primary);
+              border-color: var(--primary);
               color: white;
             }
           }
@@ -526,11 +526,11 @@ const removeImage = () => {
           }
 
           &.apply {
-            background: #409eff;
+            background: var(--primary);
             color: white;
 
             &:hover {
-              background: color.scale(#409eff, $lightness: -10%);
+              background: var(--primary-dark);
             }
           }
 
