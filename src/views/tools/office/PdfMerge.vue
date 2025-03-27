@@ -155,7 +155,7 @@ const addPageNumbers = ref(false)
 const isMerging = ref(false)
 const mergedFile = ref(null)
 const mergeTime = ref(0)
-const totalPages = ref(0)
+const totalPages = ref(0) 
 
 // 处理文件选择
 const handleFileChange = (event) => {
