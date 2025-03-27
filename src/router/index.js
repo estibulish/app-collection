@@ -436,6 +436,70 @@ const routes = [
     }
   },
   {
+    path: '/tools/office/ppt-to-pdf',
+    name: 'PptToPdf',
+    component: () => import('../views/tools/office/PptToPdf.vue'),
+    meta: {
+      title: 'PPT 转 PDF 工具'
+    }
+  },
+  {
+    path: '/tools/office/pdf-merge',
+    name: 'PdfMerge',
+    component: () => import('../views/tools/office/PdfMerge.vue'),
+    meta: {
+      title: 'PDF 合并工具'
+    }
+  },
+  {
+    path: '/tools/office/pdf-split',
+    name: 'PdfSplit',
+    component: () => import('../views/tools/office/PdfSplit.vue'),
+    meta: {
+      title: 'PDF 拆分工具'
+    }
+  },
+  {
+    path: '/tools/entertainment/random-picker',
+    name: 'RandomPicker',
+    component: () => import('../views/tools/entertainment/RandomPicker.vue'),
+    meta: {
+      title: '随机选择器'
+    }
+  },
+  {
+    path: '/tools/entertainment/dice-roller',
+    name: 'DiceRoller',
+    component: () => import('../views/tools/entertainment/DiceRoller.vue'),
+    meta: {
+      title: '骰子模拟器'
+    }
+  },
+  {
+    path: '/tools/entertainment/name-generator',
+    name: 'NameGenerator',
+    component: () => import('../views/tools/entertainment/NameGenerator.vue'),
+    meta: {
+      title: '随机名字生成'
+    }
+  },
+  {
+    path: '/tools/entertainment/color-picker',
+    name: 'ColorPicker',
+    component: () => import('../views/tools/entertainment/ColorPicker.vue'),
+    meta: {
+      title: '颜色选择器'
+    }
+  },
+  {
+    path: '/tools/entertainment/meme-generator',
+    name: 'MemeGenerator',
+    component: () => import('../views/tools/entertainment/MemeGenerator.vue'),
+    meta: {
+      title: '表情包生成器'
+    }
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: () => import('../views/NotFound.vue'),

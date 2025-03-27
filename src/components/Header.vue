@@ -90,6 +90,16 @@
         <router-link to="/updates">更新日志</router-link>
         <!-- <router-link to="/about">关于</router-link> -->
         <!-- <router-link to="/business">商务合作</router-link> -->
+        <div class="dropdown">
+          <button class="dropdown-toggle">娱乐 <span class="arrow">▾</span></button>
+          <div class="dropdown-menu">
+            <router-link to="/tools/entertainment/random-picker">随机选择器</router-link>
+            <router-link to="/tools/entertainment/dice-roller">骰子模拟器</router-link>
+            <router-link to="/tools/entertainment/name-generator">随机名字生成</router-link>
+            <router-link to="/tools/entertainment/color-picker">颜色选择器</router-link>
+            <router-link to="/tools/entertainment/meme-generator">表情包生成器</router-link>
+          </div>
+        </div>
       </nav>
 
       <div class="header-actions">

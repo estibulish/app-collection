@@ -114,7 +114,7 @@ import { ref } from 'vue'
 import FavoriteButton from '@/components/FavoriteButton.vue'
 import * as pdfjsLib from 'pdfjs-dist'
 import 'pdfjs-dist/build/pdf.worker.mjs'
-import { Document, Packer, Paragraph, TextRun } from 'docx'
+import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, Spacing } from 'docx'
 
 const fileInput = ref(null)
 const file = ref(null)
@@ -128,59 +128,6 @@ const convertTime = ref(0)
 
 // 设置 PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js'
-
-// 触发文件上传
-const triggerUpload = () => {
-  fileInput.value.click()
-}
-
-// 处理文件变化
-const handleFileChange = (event) => {
-  const files = event.target.files
-  if (files.length) {
-    handleFile(files[0])
-  }
-}
-
-// 处理拖拽
-const handleDrop = (event) => {
-  const files = event.dataTransfer.files
-  if (files.length) {
-    handleFile(files[0])
-  }
-}
-
-// 处理文件
-const handleFile = (uploadedFile) => {
-  if (!uploadedFile.name.endsWith('.pdf')) {
-    alert('请上传 PDF 文件')
-    return
-  }
-
-  if (uploadedFile.size > 20 * 1024 * 1024) {
-    alert('文件大小不能超过 20MB')
-    return
-  }
-
-  file.value = uploadedFile
-  convertedFile.value = null
-}
-
-// 清空文件
-const clearFile = () => {
-  file.value = null
-  convertedFile.value = null
-  fileInput.value.value = ''
-}
-
-// 格式化文件大小
-const formatSize = (bytes) => {
-  if (bytes === 0) return '0 B'
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB', 'GB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-}
 
 // 转换为 Word
 const convertToWord = async () => {
@@ -202,39 +149,151 @@ const convertToWord = async () => {
     const pdf = await loadingTask.promise
     
     // 提取文本内容
-    let content = ''
+    let textItems = []
+    let lastY = null
+    let lastPageNum = null
+    
     for (let i = 1; i <= pdf.numPages; i++) {
       const page = await pdf.getPage(i)
       const textContent = await page.getTextContent({
-        normalizeWhitespace: true,
+        normalizeWhitespace: false,
         disableCombineTextItems: false
       })
-      content += textContent.items.map(item => item.str).join(' ') + '\n\n'
+      
+      // 处理每个文本项
+      for (const item of textContent.items) {
+        // 添加页码信息
+        item.pageNum = i
+        
+        // 计算文本项的位置信息
+        const tx = pdfjsLib.Util.transform(
+          page.getViewport({ scale: 1 }).transform,
+          item.transform
+        )
+        
+        item.x = tx[4]
+        item.y = tx[5]
+        
+        textItems.push(item)
+      }
+    }
+    
+    // 按页码和垂直位置排序
+    textItems.sort((a, b) => {
+      if (a.pageNum !== b.pageNum) return a.pageNum - b.pageNum
+      
+      // 同一页内按垂直位置排序（从上到下）
+      const yDiff = Math.abs(a.y - b.y)
+      if (yDiff > 5) return b.y - a.y // PDF 坐标系中 y 轴向上为正
+      
+      // 垂直位置相近时按水平位置排序（从左到右）
+      return a.x - b.x
+    })
+    
+    // 识别段落
+    const paragraphs = []
+    let currentParagraph = ''
+    let currentY = null
+    let currentPageNum = null
+    
+    for (let i = 0; i < textItems.length; i++) {
+      const item = textItems[i]
+      
+      // 检测新段落的开始
+      const isNewParagraph = 
+        currentPageNum !== item.pageNum || // 新页面
+        currentY === null || // 第一个文本项
+        Math.abs(currentY - item.y) > 12 // 垂直距离较大
+      
+      if (isNewParagraph && currentParagraph.trim()) {
+        paragraphs.push(currentParagraph.trim())
+        currentParagraph = ''
+      }
+      
+      // 添加空格处理
+      if (currentParagraph && !currentParagraph.endsWith(' ') && 
+          item.str && !item.str.startsWith(' ')) {
+        currentParagraph += ' '
+      }
+      
+      currentParagraph += item.str
+      currentY = item.y
+      currentPageNum = item.pageNum
+      
+      // 检查是否是段落结束（如果下一项是新段落的开始）
+      const nextItem = textItems[i + 1]
+      if (!nextItem && currentParagraph.trim()) {
+        paragraphs.push(currentParagraph.trim())
+      }
     }
     
     // 创建 Word 文档
     const doc = new Document({
       sections: [{
         properties: {},
-        children: content.split('\n\n')
-          .filter(p => p.trim())
-          .map(text => new Paragraph({
-            children: [
-              new TextRun({
-                text: text.trim(),
-                size: 24, // 12pt
-              })
-            ],
+        children: paragraphs.map(text => {
+          // 检测标题
+          const isHeading = text.length < 100 && 
+                           (/^[第]?[0-9一二三四五六七八九十]+[章节\s\.、]/.test(text) || 
+                            /^[A-Z\s\.]+$/.test(text) ||
+                            text.endsWith('：') || text.endsWith(':'));
+          
+          return new Paragraph({
+            text: text,
+            heading: isHeading ? HeadingLevel.HEADING_2 : undefined,
             spacing: {
-              before: 200,
-              after: 200,
-              line: 360,
+              before: 240, // 段前间距
+              after: 240,  // 段后间距
+              line: 360,   // 行距
               lineRule: 'auto'
+            },
+            alignment: isHeading ? AlignmentType.CENTER : AlignmentType.LEFT,
+            style: {
+              run: {
+                size: 28, // 14pt (28 half-points)
+                font: 'Microsoft YaHei'
+              }
             }
-          }))
+          });
+        })
       }],
       creator: 'PDF to Word Converter',
-      description: 'Converted from PDF'
+      description: 'Converted from PDF',
+      styles: {
+        paragraphStyles: [
+          {
+            id: 'Normal',
+            name: 'Normal',
+            run: {
+              size: 28, // 14pt
+              font: 'Microsoft YaHei'
+            },
+            paragraph: {
+              spacing: {
+                line: 360,
+                lineRule: 'auto'
+              }
+            }
+          },
+          {
+            id: 'Heading2',
+            name: 'Heading 2',
+            basedOn: 'Normal',
+            next: 'Normal',
+            run: {
+              size: 32, // 16pt
+              bold: true,
+              font: 'Microsoft YaHei'
+            },
+            paragraph: {
+              spacing: {
+                before: 240,
+                after: 240
+              }
+            }
+          }
+        ]
+      }
     })
     
     // 导出为 Word 文件
@@ -253,18 +312,63 @@ const convertToWord = async () => {
   }
 }
 
-// 下载结果
-const downloadResult = () => {
-  if (!convertedFile.value) return
+// 处理文件选择
+const handleFileChange = (event) => {
+  const selectedFile = event.target.files[0]
+  if (selectedFile && selectedFile.type === 'application/pdf') {
+    file.value = selectedFile
+    convertedFile.value = null
+  } else {
+    alert('请选择有效的 PDF 文件')
+  }
+}
 
-  const url = URL.createObjectURL(convertedFile.value)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = convertedFile.value.name
-  document.body.appendChild(a)
-  a.click()
-  document.body.removeChild(a)
-  URL.revokeObjectURL(url)
+// 处理拖放
+const handleDrop = (event) => {
+  const droppedFile = event.dataTransfer.files[0]
+  if (droppedFile && droppedFile.type === 'application/pdf') {
+    file.value = droppedFile
+    convertedFile.value = null
+  } else {
+    alert('请拖放有效的 PDF 文件')
+  }
+}
+
+// 触发文件上传
+const triggerUpload = () => {
+  if (fileInput.value) {
+    fileInput.value.click()
+  }
+}
+
+// 清空文件
+const clearFile = () => {
+  file.value = null
+  convertedFile.value = null
+  if (fileInput.value) {
+    fileInput.value.value = ''
+  }
+}
+
+// 下载转换后的文件
+const downloadResult = () => {
+  if (convertedFile.value) {
+    const url = URL.createObjectURL(convertedFile.value)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = convertedFile.value.name
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
+}
+
+// 格式化文件大小
+const formatSize = (bytes) => {
+  if (bytes < 1024) return bytes + ' B'
+  else if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB'
+  else return (bytes / (1024 * 1024)).toFixed(2) + ' MB'
 }
 </script>
 

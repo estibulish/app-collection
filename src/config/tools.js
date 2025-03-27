@@ -93,6 +93,33 @@ export const categories = [
     name: '办公工具',
     icon: '📁',
     description: '办公辅助工具集合'
+  },
+  {
+    id: 'ppt-to-pdf',
+    name: 'PPT 转 PDF',
+    icon: '📊',
+    route: '/tools/office/ppt-to-pdf',
+    description: '将 PowerPoint 演示文稿转换为 PDF 格式'
+  },
+  {
+    id: 'pdf-merge',
+    name: 'PDF 合并',
+    icon: '📑',
+    route: '/tools/office/pdf-merge',
+    description: '合并多个 PDF 文件为一个文件'
+  },
+  {
+    id: 'pdf-split',
+    name: 'PDF 拆分',
+    icon: '✂️',
+    route: '/tools/office/pdf-split',
+    description: '将 PDF 文件拆分为多个文件'
+  },
+  {
+    id: 'entertainment',
+    name: '娱乐工具',
+    icon: '🎮',
+    description: '各类娱乐和休闲工具'
   }
 ]
 
@@ -592,6 +619,53 @@ export const tools = [
     isHot: false,
     isNew: true,
     updateTime: '2024-03-25'
+  },
+  {
+    id: 'random-picker',
+    name: '随机选择器',
+    icon: '🎲',
+    route: '/tools/entertainment/random-picker',
+    description: '帮助你做随机选择，解决选择困难症',
+    categories: ['entertainment'],
+    tags: ['随机', '选择', '抽签'],
+    isNew: true
+  },
+  {
+    id: 'dice-roller',
+    name: '骰子模拟器',
+    icon: '🎲',
+    route: '/tools/entertainment/dice-roller',
+    description: '模拟各种类型的骰子，支持多面骰和自定义',
+    categories: ['entertainment'],
+    tags: ['骰子', '随机', '游戏']
+  },
+  {
+    id: 'name-generator',
+    name: '随机名字生成',
+    icon: '📝',
+    route: '/tools/entertainment/name-generator',
+    description: '生成随机的中英文名字，适用于各种场景',
+    categories: ['entertainment'],
+    tags: ['名字', '随机', '生成']
+  },
+  {
+    id: 'color-picker',
+    name: '颜色选择器',
+    icon: '🎨',
+    route: '/tools/entertainment/color-picker',
+    description: '高级颜色选择工具，支持多种颜色格式和配色方案',
+    categories: ['entertainment', 'design'],
+    tags: ['颜色', '设计', '选择器']
+  },
+  {
+    id: 'meme-generator',
+    name: '表情包生成器',
+    icon: '😂',
+    route: '/tools/entertainment/meme-generator',
+    description: '在线制作各种流行表情包，添加自定义文字',
+    categories: ['entertainment', 'image'],
+    tags: ['表情包', '图片', '娱乐'],
+    isHot: true
   }
 ]
 

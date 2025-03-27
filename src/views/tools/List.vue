@@ -1025,31 +1025,7 @@ watch([selectedCategories, frequency, sortBy], () => {
 
 /* 添加列表视图样式 */
 .tools-grid.list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-
-    .tool-card {
-        display: flex;
-        align-items: center;
-        padding: 1rem;
-
-        .tool-card-header {
-            margin-right: 1rem;
-        }
-
-        .tool-card-content {
-            flex: 1;
-        }
-
-        .tool-card-footer {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            border-top: none;
-        }
-    }
+    grid-template-columns: 1fr;
 }
 
 /* 添加过渡动画 */

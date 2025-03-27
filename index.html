@@ -1,13 +1,88 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + Vue</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vite + Vue</title>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script type="module" src="/src/main.js"></script>
+  <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.5/libs/cn/index.js"></script>
+  <script>
+    new CozeWebSDK.WebChatClient({
+      /**
+      * Agent or app settings
+      * for agent
+      * @param config.bot_id - Agent ID.
+      * for app
+      * @param config.type - To integrate a Coze app, you must set the value to app.
+      * @param config.appInfo.appId - AI app ID.
+      * @param config.appInfo.workflowId - Workflow or chatflow ID.
+      */
+      config: {
+        bot_id: '7486303110562840630',
+      },
+      /**
+      * The auth property is used to configure the authentication method.
+      * @param type - Authentication method, default type is 'unauth', which means no authentication is required; it is recommended to set it to 'token', which means authentication is done through PAT (Personal Access Token) or OAuth.
+      * @param token - When the type is set to 'token', you need to configure the PAT (Personal Access Token) or OAuth access key.
+      * @param onRefreshToken - When the access key expires, a new key can be set as needed.
+      */
+      auth: {
+        type: 'token',
+        token: 'czu_qUv8XD0WEU1t0MHoXktDHcTnaGZEAVDMfaMVcxA4ahmHrf2VHczORZp9EllgACM9q',
+        onRefreshToken: async () => 'hE93rGkwJuerAh5OEWzC500Xilc3F7InoI7fcYD9aELfIbWkD4H1HRJN8r8W7tioOMRyaBZk',
+      },
+      /**
+      * The userInfo parameter is used to set the display of agent user information in the chat box.
+      * @param userInfo.id - ID of the agent user.
+      * @param userInfo.url - URL address of the user's avatar.
+      * @param userInfo.nickname - Nickname of the agent user.
+      */
+      userInfo: {
+        id: 'user',
+        url: 'https://lf-coze-web-cdn.coze.cn/obj/coze-web-cn/obric/coze/favicon.1970.png',
+        nickname: 'UserA',
+      },
+      ui: {
+        /**
+        * The ui.base parameter is used to add the overall UI effect of the chat window.
+        * @param base.icon - Application icon URL.
+        * @param base.layout - Layout style of the agent chat box window, which can be set as 'pc' or'mobile'.
+        * @param base.lang - System language of the agent, which can be set as 'en' or 'zh-CN'.
+        * @param base.zIndex - The z-index of the chat box.
+        */
+        base: {
+          icon: 'https://lf-coze-web-cdn.coze.cn/obj/coze-web-cn/obric/coze/favicon.1970.png',
+          layout: 'pc',
+          lang: 'en',
+          zIndex: 1000,
+        },
+        /**
+        * Control the UI and basic capabilities of the chat box.
+        * @param chatBot.title - The title of the chatbox
+        * @param chatBot.uploadable - Whether file uploading is supported.
+        * @param chatBot.width - The width of the agent window on PC is measured in px, default is 460.
+        * @param chatBot.el - Container for setting the placement of the chat box (Element).
+        */
+        chatBot: {
+          title: '生活百事通',
+          uploadable: true,
+          width: 390
+        },
+        /**
+        * Controls whether to display the floating ball at the bottom right corner of the page.
+        */
+        asstBtn: {
+          isNeed: true,
+        },
+      },
+    });
+  </script>
+</body>
+
 </html>
