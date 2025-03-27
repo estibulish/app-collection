@@ -91,13 +91,33 @@
         <!-- <router-link to="/about">关于</router-link> -->
         <!-- <router-link to="/business">商务合作</router-link> -->
         <div class="dropdown">
-          <button class="dropdown-toggle">娱乐 <span class="arrow">▾</span></button>
-          <div class="dropdown-menu">
-            <router-link to="/tools/entertainment/random-picker">随机选择器</router-link>
-            <router-link to="/tools/entertainment/dice-roller">骰子模拟器</router-link>
-            <router-link to="/tools/entertainment/name-generator">随机名字生成</router-link>
-            <router-link to="/tools/entertainment/color-picker">颜色选择器</router-link>
-            <router-link to="/tools/entertainment/meme-generator">表情包生成器</router-link>
+          <button class="dropdown-toggle" @click="toggleDropdown">
+            娱乐 
+            <span class="arrow" :class="{ 'rotated': showDropdown }">▾</span>
+          </button>
+          <div class="dropdown-menu" :class="{ 'show': showDropdown }">
+            <div class="menu-grid">
+              <router-link to="/tools/entertainment/random-picker" class="menu-item">
+                <span class="item-icon">🎲</span>
+                <span class="item-text">随机选择器</span>
+              </router-link>
+              <router-link to="/tools/entertainment/dice-roller" class="menu-item">
+                <span class="item-icon">🎲</span>
+                <span class="item-text">骰子模拟器</span>
+              </router-link>
+              <router-link to="/tools/entertainment/name-generator" class="menu-item">
+                <span class="item-icon">📝</span>
+                <span class="item-text">随机名字生成</span>
+              </router-link>
+              <router-link to="/tools/entertainment/color-picker" class="menu-item">
+                <span class="item-icon">🎨</span>
+                <span class="item-text">颜色选择器</span>
+              </router-link>
+              <router-link to="/tools/entertainment/meme-generator" class="menu-item">
+                <span class="item-icon">😂</span>
+                <span class="item-text">表情包生成器</span>
+              </router-link>
+            </div>
           </div>
         </div>
       </nav>
@@ -349,6 +369,10 @@ const confirmLogout = async () => {
   router.push('/')
 }
 
+const toggleDropdown = () => {
+  showDropdown.value = !showDropdown.value
+}
+
 onMounted(() => {
   themeStore.initTheme()
 })
@@ -389,15 +413,16 @@ onMounted(() => {
 
 .main-nav {
   display: flex;
-  gap: 2rem;
+  align-items: center;
+  gap: 1rem;
 
   a {
-    color: var(--text-secondary);
+    color: var(--text-primary);
     text-decoration: none;
+    padding: 0.5rem 1rem;
     transition: color 0.2s;
-    font-size: 0.9375rem;
 
-    &:hover, &.router-link-active {
+    &:hover {
       color: var(--primary);
     }
   }
@@ -1046,6 +1071,139 @@ onMounted(() => {
   .main-nav,
   .header-right {
     display: none;
+  }
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+
+  .dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0.5rem 1rem;
+    color: var(--text-primary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: color 0.2s;
+
+    .arrow {
+      font-size: 0.8em;
+      transition: transform 0.2s;
+
+      &.rotated {
+        transform: rotate(180deg);
+      }
+    }
+
+    &:hover {
+      color: var(--primary);
+    }
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.5rem;
+    min-width: 200px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    z-index: 100;
+
+    &.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .menu-grid {
+      display: grid;
+      gap: 0.5rem;
+
+      .menu-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem;
+        color: var(--text-primary);
+        text-decoration: none;
+        border-radius: 4px;
+        transition: all 0.2s;
+
+        &:hover {
+          background: var(--bg-hover);
+          color: var(--primary);
+        }
+
+        .item-icon {
+          font-size: 1.2em;
+        }
+
+        .item-text {
+          font-size: 0.9em;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 769px) {
+  .dropdown {
+    &:hover {
+      .dropdown-toggle {
+        color: var(--primary);
+
+        .arrow {
+          transform: rotate(180deg);
+        }
+      }
+
+      .dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .dropdown {
+    width: 100%;
+    
+    .dropdown-toggle {
+      width: 100%;
+      justify-content: center;
+      padding: 0.75rem;
+    }
+
+    .dropdown-menu {
+      position: static;
+      transform: none;
+      width: 100%;
+      box-shadow: none;
+      border: none;
+      background: var(--bg-hover);
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      visibility: visible;
+      opacity: 1;
+      display: none;
+
+      &.show {
+        display: block;
+      }
+    }
   }
 }
 </style> 
