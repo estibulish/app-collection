@@ -7,11 +7,7 @@
           <span class="logo-text">工具箱</span>
         </div>
         <p class="footer-desc">简单高效的在线工具集合</p>
-        <div class="social-links">
-          <a href="#" title="微信">📱</a>
-          <a href="#" title="QQ">💬</a>
-          <a href="#" title="GitHub">📦</a>
-        </div>
+        <WechatQrcode />
       </div>
       <div class="footer-right">
         <div class="footer-links-group">
@@ -42,6 +38,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import WechatQrcode from './WechatQrcode.vue'
 
 const currentYear = computed(() => new Date().getFullYear())
 </script>
@@ -64,6 +61,9 @@ footer {
 
 .footer-left {
   max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 
   .logo {
     display: flex;
@@ -80,6 +80,10 @@ footer {
     font-size: 1.25rem;
     font-weight: 600;
   }
+
+  .social-links {
+    margin-top: 0;
+  }
 }
 
 .footer-desc {
@@ -91,7 +95,6 @@ footer {
 .social-links {
   display: flex;
   gap: 1rem;
-  margin-top: 1.5rem;
 
   a {
     color: var(--text-secondary);
@@ -159,6 +162,7 @@ footer {
     max-width: none;
     text-align: center;
     padding: 0 1rem;
+    align-items: center;
 
     .logo {
       justify-content: center;
@@ -170,7 +174,6 @@ footer {
 
     .social-links {
       justify-content: center;
-      margin-top: 1rem;
     }
   }
 
